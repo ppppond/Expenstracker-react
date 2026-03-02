@@ -1,15 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import viteLogo from "/vite.svg";
 import List from "./components/List";
 import Form from "./components/Form";
 
 function App() {
   // กำหนด State
-  const [expense, setExpense] = useState([
-    { id: 1, title: "ค่าข้าว", price: 50 },
-    { id: 2, title: "ค่าเช่า server", price: 150 },
-    { id: 3, title: "ค่า computer", price: 3000 },
-  ]);
+  const [expense, setExpense] = useState(JSON.parse(localStorage.getItem("myExpense")) || []);
 
   // function เพิ่ม list รายการจาก Form.jsx หลักการคือ App.jsx --> Form.jsx ให้กรอกข้อมมูลแล้ว App.jsx ดึงกลับขึ้นไป
   function addFormExpense(newItem) {
@@ -34,6 +30,10 @@ function App() {
   const initailValue = 0;
   const total = expense.reduce((acc, crr) => acc + crr.price, initailValue);
 
+  useEffect(() => {
+    localStorage.setItem('myExpense', JSON.stringify(expense))
+  }, [expense])
+
   return (
     // 📱 Container หลักของการ์ด: 
     // mx-auto (จัดกึ่งกลาง), max-w-md (ล็อกความกว้าง), mt-10 (ดันลงจากขอบบน)
@@ -42,7 +42,7 @@ function App() {
 
       {/* 🎯 ส่วนหัวแสดงยอดรวม: ตัวใหญ่ (text-2xl) หนา (font-bold) และอยู่ตรงกลาง (text-center) */}
       <h1 className="text-2xl font-bold text-center">ยอดรวมทั้งหมด: {total} บาท</h1>
-      
+
       <Form addFormExpense={addFormExpense} />
       <List expense={expense} deleteExpense={deleteExpense} />
     </div>
